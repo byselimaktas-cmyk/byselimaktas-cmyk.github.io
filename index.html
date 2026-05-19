@@ -1,14 +1,156 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="tr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="">
-
-    <title>Document</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lattem — Kelime Oyunu</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="container" id="container"><div class="form-container sign-up"><form><h1>test</h1></form></div></div>
-    
+
+  <!-- EKRAN 1: AÇILIŞ -->
+  <div id="screen-intro" class="screen active">
+    <div class="intro-bg">
+      <div class="grid-lines"></div>
+      <div class="glow-orb orb1"></div>
+      <div class="glow-orb orb2"></div>
+    </div>
+    <div class="intro-content">
+      <div class="logo-wrap">
+        <div class="logo-letters">
+          <span>L</span><span>A</span><span>T</span><span>T</span><span>E</span><span>M</span>
+        </div>
+        <p class="tagline">Kelimeyi bul · Zamanla yar</p>
+      </div>
+      <div class="daily-info">
+        <span class="day-label">BUGÜNÜN MODU</span>
+        <span id="daily-length-display" class="day-value">— harf</span>
+      </div>
+      <button class="btn-start" id="btn-start">
+        <span>Oyna</span>
+        <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <button class="btn-how" id="btn-how">Nasıl Oynanır?</button>
+    </div>
+    <div class="intro-footer">
+      <span>Her gün yeni kelime · Her gün yeni süre</span>
+    </div>
+  </div>
+
+  <!-- EKRAN 2: NASIL OYNANIR -->
+  <div id="screen-how" class="screen">
+    <div class="how-header">
+      <button class="btn-back" id="btn-back-how">←</button>
+      <h2>Nasıl Oynanır?</h2>
+    </div>
+    <div class="how-body">
+      <div class="how-example">
+        <div class="mini-row">
+          <div class="mini-cell correct">K</div>
+          <div class="mini-cell">A</div>
+          <div class="mini-cell">L</div>
+          <div class="mini-cell">E</div>
+          <div class="mini-cell">M</div>
+        </div>
+        <p><strong class="c-green">Yeşil</strong> — harf doğru yerde</p>
+      </div>
+      <div class="how-example">
+        <div class="mini-row">
+          <div class="mini-cell">S</div>
+          <div class="mini-cell present">E</div>
+          <div class="mini-cell">V</div>
+          <div class="mini-cell">G</div>
+          <div class="mini-cell">İ</div>
+        </div>
+        <p><strong class="c-yellow">Sarı</strong> — harf var ama yanlış yerde</p>
+      </div>
+      <div class="how-example">
+        <div class="mini-row">
+          <div class="mini-cell">D</div>
+          <div class="mini-cell">A</div>
+          <div class="mini-cell absent">R</div>
+          <div class="mini-cell">B</div>
+          <div class="mini-cell">E</div>
+        </div>
+        <p><strong class="c-grey">Gri</strong> — harf yok</p>
+      </div>
+      <div class="how-rules">
+        <div class="rule-item">⏱ Süre bitmeden kelimeyi bul</div>
+        <div class="rule-item">🔡 Her gün farklı uzunlukta kelime</div>
+        <div class="rule-item">🔄 6 hakkın var</div>
+        <div class="rule-item">🏆 Puan hakkın kalan süreye göre</div>
+      </div>
+      <button class="btn-start" id="btn-start-from-how">
+        <span>Oynamaya Başla</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- EKRAN 3: OYUN -->
+  <div id="screen-game" class="screen">
+    <header class="game-header">
+      <button class="btn-back" id="btn-back-game">←</button>
+      <div class="header-center">
+        <div class="logo-sm">LATTEM</div>
+        <div class="attempt-info">Deneme <span id="attempt-num">1</span>/6</div>
+      </div>
+      <div class="timer-wrap">
+        <div class="timer-ring">
+          <svg viewBox="0 0 40 40">
+            <circle cx="20" cy="20" r="17" class="ring-bg"/>
+            <circle cx="20" cy="20" r="17" class="ring-fill" id="timer-circle"/>
+          </svg>
+          <span id="timer-text">60</span>
+        </div>
+      </div>
+    </header>
+
+    <div class="game-area">
+      <div id="board" class="board"></div>
+    </div>
+
+    <div id="message-bar" class="message-bar"></div>
+
+    <div class="keyboard-area">
+      <div id="keyboard" class="keyboard"></div>
+    </div>
+  </div>
+
+  <!-- EKRAN 4: SONUÇ -->
+  <div id="screen-result" class="screen">
+    <div class="result-bg">
+      <div class="glow-orb orb3"></div>
+    </div>
+    <div class="result-content">
+      <div id="result-emoji" class="result-emoji">🏆</div>
+      <h2 id="result-title">Tebrikler!</h2>
+      <p id="result-sub">Kelimeyi buldun!</p>
+      <div id="result-word-reveal" class="result-word-reveal"></div>
+      <div class="result-stats">
+        <div class="stat-box">
+          <span class="stat-num" id="stat-score">0</span>
+          <span class="stat-label">Puan</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-num" id="stat-time">—</span>
+          <span class="stat-label">Süre</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-num" id="stat-tries">—</span>
+          <span class="stat-label">Deneme</span>
+        </div>
+      </div>
+      <div class="result-next">
+        <p class="next-label">Sonraki kelime</p>
+        <div id="next-timer" class="next-timer">00:00:00</div>
+      </div>
+      <button class="btn-share" id="btn-share">Sonucu Paylaş</button>
+    </div>
+  </div>
+
+  <script src="js/words.js"></script>
+  <script src="js/game.js"></script>
 </body>
 </html>
