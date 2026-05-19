@@ -1,156 +1,604 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Lattem — Kelime Oyunu</title>
-  <link rel="stylesheet" href="css/style.css" />
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<title>Lattem</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:#0d0d14;color:#e8e8f0;font-family:'DM Sans',sans-serif;-webkit-font-smoothing:antialiased;overflow:hidden;touch-action:manipulation}
+
+/* ── EKRANLAR ── */
+.scr{position:fixed;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center}
+.scr.on{display:flex}
+
+/* ── AÇILIŞ ── */
+#s-intro{background:#0d0d14;gap:32px}
+.intro-bg{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.grid-bg{position:absolute;inset:0;
+  background-image:linear-gradient(rgba(108,99,255,.07) 1px,transparent 1px),
+                   linear-gradient(90deg,rgba(108,99,255,.07) 1px,transparent 1px);
+  background-size:52px 52px}
+.blob{position:absolute;border-radius:50%;pointer-events:none;animation:blob-move 8s ease-in-out infinite alternate}
+.blob1{width:420px;height:420px;top:-140px;left:-120px;background:radial-gradient(circle,rgba(108,99,255,.22),transparent 65%)}
+.blob2{width:300px;height:300px;bottom:-80px;right:-60px;background:radial-gradient(circle,rgba(236,72,153,.18),transparent 65%);animation-delay:-3s}
+@keyframes blob-move{from{transform:translate(0,0)}to{transform:translate(20px,16px)}}
+
+.logo-tiles{display:flex;gap:7px;position:relative;z-index:1}
+.logo-tile{
+  width:56px;height:66px;display:flex;align-items:center;justify-content:center;
+  font-family:'DM Mono',monospace;font-size:26px;font-weight:500;
+  background:#1a1a28;border:1.5px solid #2d2d45;border-radius:10px;color:#e8e8f0;
+  animation:tile-drop .55s cubic-bezier(.34,1.56,.64,1) both}
+.logo-tile:nth-child(1){animation-delay:.06s;border-color:#6c63ff;color:#6c63ff}
+.logo-tile:nth-child(2){animation-delay:.12s}
+.logo-tile:nth-child(3){animation-delay:.18s;border-color:#22d3a5}
+.logo-tile:nth-child(4){animation-delay:.24s;border-color:#facc15;color:#facc15}
+.logo-tile:nth-child(5){animation-delay:.30s}
+.logo-tile:nth-child(6){animation-delay:.36s;border-color:#ec4899;color:#ec4899}
+@keyframes tile-drop{from{opacity:0;transform:translateY(-18px) scale(.82)}to{opacity:1;transform:none}}
+
+.tagline{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.16em;color:#55557a;text-transform:uppercase;position:relative;z-index:1}
+
+.daily-badge{
+  display:flex;align-items:center;gap:10px;
+  background:#1a1a28;border:1px solid #2d2d45;border-radius:40px;padding:9px 22px;
+  position:relative;z-index:1}
+.badge-label{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.12em;color:#55557a;text-transform:uppercase}
+.badge-val{font-family:'DM Mono',monospace;font-size:13px;font-weight:500;color:#6c63ff}
+
+.btn-play{
+  display:flex;align-items:center;gap:10px;position:relative;z-index:1;
+  background:linear-gradient(135deg,#6c63ff,#ec4899);color:#fff;
+  border:none;border-radius:14px;padding:17px 44px;
+  font-family:'DM Sans',sans-serif;font-size:17px;font-weight:600;
+  cursor:pointer;transition:transform .15s,box-shadow .15s;
+  box-shadow:0 0 36px rgba(108,99,255,.35)}
+.btn-play:hover{transform:translateY(-2px) scale(1.02);box-shadow:0 0 52px rgba(108,99,255,.5)}
+.btn-play:active{transform:scale(.97)}
+
+.btn-howto{
+  background:none;border:1.5px solid #2d2d45;color:#55557a;
+  border-radius:10px;padding:10px 26px;
+  font-family:'DM Sans',sans-serif;font-size:14px;cursor:pointer;
+  transition:border-color .2s,color .2s;position:relative;z-index:1}
+.btn-howto:hover{border-color:#6c63ff;color:#e8e8f0}
+
+/* ── NASIL OYNANIR ── */
+#s-how{background:#0d0d14;gap:0;justify-content:flex-start;padding:20px;overflow-y:auto}
+.how-top{display:flex;align-items:center;gap:14px;width:100%;max-width:460px;margin-bottom:26px}
+.how-top h2{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:.04em;color:#e8e8f0}
+.how-body{width:100%;max-width:460px;display:flex;flex-direction:column;gap:20px}
+.how-ex{display:flex;flex-direction:column;gap:10px}
+.mini-row{display:flex;gap:6px}
+.mc{
+  width:46px;height:46px;display:flex;align-items:center;justify-content:center;
+  font-family:'DM Mono',monospace;font-size:16px;font-weight:500;
+  border:2px solid #2d2d45;border-radius:8px;background:#1a1a28;color:#e8e8f0}
+.mc.ok{background:#16a34a;border-color:#16a34a;color:#fff}
+.mc.here{background:#ca8a04;border-color:#ca8a04;color:#0d0d14}
+.mc.no{background:#1e1e2e;border-color:#1e1e2e;color:#3a3a55}
+.how-ex p{font-size:13px;color:#6b7280}
+.how-ex p strong{font-weight:600}
+.c-g{color:#22c55e}.c-y{color:#eab308}.c-d{color:#55557a}
+.rules-box{background:#1a1a28;border:1px solid #2d2d45;border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:10px}
+.rule{font-size:13px;color:#9090b0;display:flex;align-items:center;gap:8px}
+
+/* ── OYUN ── */
+#s-game{background:#0d0d14;justify-content:flex-start;gap:0}
+
+.g-header{
+  width:100%;max-width:500px;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:12px 16px;border-bottom:1px solid #1e1e2e}
+
+.logo-sm{
+  font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:.08em;
+  background:linear-gradient(135deg,#6c63ff,#ec4899);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+
+.try-info{font-family:'DM Mono',monospace;font-size:10px;color:#55557a;letter-spacing:.08em;text-align:center;margin-top:2px}
+
+/* Timer */
+.tmr-wrap{position:relative;width:48px;height:48px;display:flex;align-items:center;justify-content:center;cursor:default}
+.tmr-wrap svg{position:absolute;inset:0;transform:rotate(-90deg)}
+.tmr-bg{fill:none;stroke:#1e1e2e;stroke-width:3.5}
+.tmr-fill{fill:none;stroke:#6c63ff;stroke-width:3.5;stroke-linecap:round;transition:stroke-dashoffset .85s linear,stroke .3s}
+#tmr-num{font-family:'DM Mono',monospace;font-size:13px;font-weight:500;color:#e8e8f0;position:relative;z-index:1}
+#tmr-num.warn{color:#f97316}
+#tmr-num.danger{color:#ef4444;animation:blink .45s ease infinite alternate}
+@keyframes blink{from{opacity:1}to{opacity:.4}}
+
+/* Board */
+.board-wrap{flex:1;display:flex;align-items:center;justify-content:center;padding:14px 16px}
+#board{display:flex;flex-direction:column;gap:6px}
+.b-row{display:grid;gap:6px}
+.cell{
+  display:flex;align-items:center;justify-content:center;
+  font-family:'DM Mono',monospace;font-weight:500;
+  border:2px solid #2a2a40;border-radius:8px;background:#151520;color:#e8e8f0;
+  user-select:none;transition:border-color .1s;
+  /* Boyut responsive – JS tarafından set edilir */}
+.cell.has{border-color:#6060a0}
+.cell.flip{animation:flip .32s ease forwards}
+@keyframes flip{0%{transform:scaleY(1)}50%{transform:scaleY(0)}100%{transform:scaleY(1)}}
+.cell.ok{background:#16a34a;border-color:#16a34a;color:#fff}
+.cell.here{background:#ca8a04;border-color:#ca8a04;color:#0d0d14}
+.cell.no{background:#1e1e2e;border-color:#1e1e2e;color:#3a3a55}
+
+/* Mesaj */
+#msg{
+  height:30px;display:flex;align-items:center;justify-content:center;
+  font-family:'DM Mono',monospace;font-size:12px;color:#e8e8f0;
+  background:#1e1e2e;border-radius:8px;margin:0 16px 8px;
+  opacity:0;transform:translateY(-4px);transition:opacity .2s,transform .2s;pointer-events:none}
+#msg.show{opacity:1;transform:none}
+
+/* Klavye */
+.kb-wrap{width:100%;padding:4px 8px 14px;display:flex;flex-direction:column;align-items:center;gap:5px}
+.kb-row{display:flex;gap:5px;justify-content:center}
+.kkey{
+  height:50px;min-width:34px;padding:0 4px;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'DM Mono',monospace;font-size:13px;font-weight:500;
+  background:#1e1e30;border:1px solid #2d2d45;border-radius:8px;color:#d0d0e8;
+  cursor:pointer;transition:background .12s,border-color .12s,transform .08s;
+  -webkit-tap-highlight-color:transparent;touch-action:manipulation;user-select:none}
+.kkey.wide{min-width:56px;font-size:11px}
+.kkey:active{transform:scale(.91)}
+.kkey.ok{background:#166534;border-color:#16a34a;color:#dcfce7}
+.kkey.here{background:#713f12;border-color:#ca8a04;color:#fef08a}
+.kkey.no{background:#111118;border-color:#111118;color:#333348}
+
+/* ── SONUÇ ── */
+#s-result{background:#0d0d14;gap:20px}
+.res-bg{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.res-blob{position:absolute;width:500px;height:500px;top:50%;left:50%;transform:translate(-50%,-50%);background:radial-gradient(circle,rgba(34,197,94,.12),transparent 65%);border-radius:50%}
+.res-inner{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:18px;padding:0 24px;max-width:380px;width:100%;text-align:center}
+.res-emoji{font-size:64px;line-height:1;animation:epop .5s cubic-bezier(.34,1.56,.64,1) both}
+@keyframes epop{from{transform:scale(0) rotate(-15deg);opacity:0}to{transform:none;opacity:1}}
+#res-title{font-family:'Bebas Neue',sans-serif;font-size:40px;letter-spacing:.04em;color:#e8e8f0}
+#res-sub{font-family:'DM Mono',monospace;font-size:12px;color:#55557a;letter-spacing:.06em}
+.word-reveal{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
+.rl{
+  width:44px;height:50px;display:flex;align-items:center;justify-content:center;
+  font-family:'DM Mono',monospace;font-size:17px;font-weight:500;
+  background:#1a1a28;border:2px solid #22c55e;border-radius:8px;color:#22c55e;
+  animation:rl-pop .4s cubic-bezier(.34,1.56,.64,1) both}
+@keyframes rl-pop{from{transform:translateY(12px) scale(.8);opacity:0}to{transform:none;opacity:1}}
+.stats{display:flex;gap:10px}
+.stat{display:flex;flex-direction:column;align-items:center;gap:4px;background:#1a1a28;border:1px solid #2d2d45;border-radius:12px;padding:14px 18px;min-width:80px}
+.stat-n{font-family:'DM Mono',monospace;font-size:22px;font-weight:500;color:#6c63ff}
+.stat-l{font-size:11px;color:#55557a;letter-spacing:.08em;text-transform:uppercase}
+.next-wrap{display:flex;flex-direction:column;align-items:center;gap:6px}
+.next-lbl{font-family:'DM Mono',monospace;font-size:10px;color:#55557a;letter-spacing:.12em;text-transform:uppercase}
+#next-count{font-family:'DM Mono',monospace;font-size:24px;font-weight:500;color:#e8e8f0}
+.btn-share{
+  background:#1a1a28;border:1.5px solid #2d2d45;color:#e8e8f0;
+  border-radius:12px;padding:13px 32px;
+  font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;cursor:pointer;
+  transition:border-color .2s,background .2s}
+.btn-share:hover{border-color:#6c63ff;background:rgba(108,99,255,.12)}
+
+/* ── GENEL ── */
+.btn-back{
+  background:#1a1a28;border:1px solid #2d2d45;color:#e8e8f0;
+  width:38px;height:38px;border-radius:10px;font-size:16px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  transition:background .15s}
+.btn-back:hover{background:#2d2d45}
+
+/* Konfeti */
+.kf{position:fixed;top:-10px;pointer-events:none;z-index:9999;border-radius:2px;animation:kf-fall linear forwards}
+@keyframes kf-fall{0%{transform:translateY(0) rotate(0);opacity:1}80%{opacity:1}100%{transform:translateY(100vh) rotate(720deg);opacity:0}}
+
+@media(max-width:380px){.logo-tile{width:45px;height:56px;font-size:20px}.kkey{height:46px;min-width:28px}.kkey.wide{min-width:50px}}
+</style>
 </head>
 <body>
 
-  <!-- EKRAN 1: AÇILIŞ -->
-  <div id="screen-intro" class="screen active">
-    <div class="intro-bg">
-      <div class="grid-lines"></div>
-      <div class="glow-orb orb1"></div>
-      <div class="glow-orb orb2"></div>
-    </div>
-    <div class="intro-content">
-      <div class="logo-wrap">
-        <div class="logo-letters">
-          <span>L</span><span>A</span><span>T</span><span>T</span><span>E</span><span>M</span>
-        </div>
-        <p class="tagline">Kelimeyi bul · Zamanla yar</p>
+<!-- AÇILIŞ -->
+<div id="s-intro" class="scr on">
+  <div class="intro-bg">
+    <div class="grid-bg"></div>
+    <div class="blob blob1"></div>
+    <div class="blob blob2"></div>
+  </div>
+  <div class="logo-tiles">
+    <div class="logo-tile">L</div><div class="logo-tile">A</div>
+    <div class="logo-tile">T</div><div class="logo-tile">T</div>
+    <div class="logo-tile">E</div><div class="logo-tile">M</div>
+  </div>
+  <p class="tagline">Kelimeyi bul &middot; Zamanla yar</p>
+  <div class="daily-badge">
+    <span class="badge-label">Bugün</span>
+    <span class="badge-val" id="daily-info">— harf · — sn</span>
+  </div>
+  <button class="btn-play" id="btn-play">Oyna →</button>
+  <button class="btn-howto" id="btn-howto">Nasıl Oynanır?</button>
+</div>
+
+<!-- NASIL OYNANIR -->
+<div id="s-how" class="scr">
+  <div class="how-top how-body" style="margin-bottom:0">
+    <button class="btn-back" id="btn-back-how">←</button>
+    <h2>Nasıl Oynanır?</h2>
+  </div>
+  <div class="how-body" style="margin-top:20px">
+    <div class="how-ex">
+      <div class="mini-row">
+        <div class="mc ok">K</div><div class="mc">A</div><div class="mc">L</div><div class="mc">E</div><div class="mc">M</div>
       </div>
-      <div class="daily-info">
-        <span class="day-label">BUGÜNÜN MODU</span>
-        <span id="daily-length-display" class="day-value">— harf</span>
-      </div>
-      <button class="btn-start" id="btn-start">
-        <span>Oyna</span>
-        <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </button>
-      <button class="btn-how" id="btn-how">Nasıl Oynanır?</button>
+      <p><strong class="c-g">Yeşil</strong> — harf doğru yerde</p>
     </div>
-    <div class="intro-footer">
-      <span>Her gün yeni kelime · Her gün yeni süre</span>
+    <div class="how-ex">
+      <div class="mini-row">
+        <div class="mc">S</div><div class="mc here">E</div><div class="mc">V</div><div class="mc">G</div><div class="mc">İ</div>
+      </div>
+      <p><strong class="c-y">Sarı</strong> — harf kelimede var ama yanlış yerde</p>
+    </div>
+    <div class="how-ex">
+      <div class="mini-row">
+        <div class="mc">D</div><div class="mc">A</div><div class="mc no">R</div><div class="mc">B</div><div class="mc">E</div>
+      </div>
+      <p><strong class="c-d">Gri</strong> — harf kelimede yok</p>
+    </div>
+    <div class="rules-box">
+      <div class="rule">⏱&nbsp; Süre bitmeden kelimeyi bul</div>
+      <div class="rule">🔡&nbsp; Her gün farklı uzunlukta kelime</div>
+      <div class="rule">🔄&nbsp; 6 tahmin hakkın var</div>
+      <div class="rule">🏆&nbsp; Puan = kalan süre × 10 + erken bitirme bonusu</div>
+    </div>
+    <button class="btn-play" id="btn-start-how" style="align-self:center">Oynamaya Başla →</button>
+  </div>
+</div>
+
+<!-- OYUN -->
+<div id="s-game" class="scr">
+  <div class="g-header">
+    <button class="btn-back" id="btn-back-game">←</button>
+    <div style="display:flex;flex-direction:column;align-items:center">
+      <div class="logo-sm">LATTEM</div>
+      <div class="try-info">Deneme <span id="try-num">1</span>/6</div>
+    </div>
+    <div class="tmr-wrap">
+      <svg viewBox="0 0 48 48" style="width:48px;height:48px">
+        <circle class="tmr-bg" cx="24" cy="24" r="19"/>
+        <circle class="tmr-fill" cx="24" cy="24" r="19" id="tmr-circle"/>
+      </svg>
+      <span id="tmr-num">60</span>
     </div>
   </div>
+  <div class="board-wrap"><div id="board"></div></div>
+  <div id="msg"></div>
+  <div class="kb-wrap" id="kb-wrap"></div>
+</div>
 
-  <!-- EKRAN 2: NASIL OYNANIR -->
-  <div id="screen-how" class="screen">
-    <div class="how-header">
-      <button class="btn-back" id="btn-back-how">←</button>
-      <h2>Nasıl Oynanır?</h2>
+<!-- SONUÇ -->
+<div id="s-result" class="scr">
+  <div class="res-bg"><div class="res-blob"></div></div>
+  <div class="res-inner">
+    <div class="res-emoji" id="r-emoji">🏆</div>
+    <div id="res-title">Tebrikler!</div>
+    <div id="res-sub">Kelimeyi buldun!</div>
+    <div class="word-reveal" id="r-word"></div>
+    <div class="stats">
+      <div class="stat"><span class="stat-n" id="r-score">0</span><span class="stat-l">Puan</span></div>
+      <div class="stat"><span class="stat-n" id="r-time">—</span><span class="stat-l">Süre</span></div>
+      <div class="stat"><span class="stat-n" id="r-tries">—</span><span class="stat-l">Deneme</span></div>
     </div>
-    <div class="how-body">
-      <div class="how-example">
-        <div class="mini-row">
-          <div class="mini-cell correct">K</div>
-          <div class="mini-cell">A</div>
-          <div class="mini-cell">L</div>
-          <div class="mini-cell">E</div>
-          <div class="mini-cell">M</div>
-        </div>
-        <p><strong class="c-green">Yeşil</strong> — harf doğru yerde</p>
-      </div>
-      <div class="how-example">
-        <div class="mini-row">
-          <div class="mini-cell">S</div>
-          <div class="mini-cell present">E</div>
-          <div class="mini-cell">V</div>
-          <div class="mini-cell">G</div>
-          <div class="mini-cell">İ</div>
-        </div>
-        <p><strong class="c-yellow">Sarı</strong> — harf var ama yanlış yerde</p>
-      </div>
-      <div class="how-example">
-        <div class="mini-row">
-          <div class="mini-cell">D</div>
-          <div class="mini-cell">A</div>
-          <div class="mini-cell absent">R</div>
-          <div class="mini-cell">B</div>
-          <div class="mini-cell">E</div>
-        </div>
-        <p><strong class="c-grey">Gri</strong> — harf yok</p>
-      </div>
-      <div class="how-rules">
-        <div class="rule-item">⏱ Süre bitmeden kelimeyi bul</div>
-        <div class="rule-item">🔡 Her gün farklı uzunlukta kelime</div>
-        <div class="rule-item">🔄 6 hakkın var</div>
-        <div class="rule-item">🏆 Puan hakkın kalan süreye göre</div>
-      </div>
-      <button class="btn-start" id="btn-start-from-how">
-        <span>Oynamaya Başla</span>
-      </button>
+    <div class="next-wrap">
+      <div class="next-lbl">Sonraki kelime</div>
+      <div id="next-count">00:00:00</div>
     </div>
+    <button class="btn-share" id="btn-share">Sonucu Paylaş</button>
   </div>
+</div>
 
-  <!-- EKRAN 3: OYUN -->
-  <div id="screen-game" class="screen">
-    <header class="game-header">
-      <button class="btn-back" id="btn-back-game">←</button>
-      <div class="header-center">
-        <div class="logo-sm">LATTEM</div>
-        <div class="attempt-info">Deneme <span id="attempt-num">1</span>/6</div>
-      </div>
-      <div class="timer-wrap">
-        <div class="timer-ring">
-          <svg viewBox="0 0 40 40">
-            <circle cx="20" cy="20" r="17" class="ring-bg"/>
-            <circle cx="20" cy="20" r="17" class="ring-fill" id="timer-circle"/>
-          </svg>
-          <span id="timer-text">60</span>
-        </div>
-      </div>
-    </header>
+<script>
+// ── KELİMELER ──────────────────────────────
+const WORDS={
+  4:["ARPA","BABA","DERE","ELMA","FARE","GECE","HAVA","KALE","LALE","MASA",
+     "OCAK","PARA","SAAT","TANE","UÇAK","YARA","ZEKA","BOYA","PERI","RIZA",
+     "UZUN","VEFA","BUSE","DIZI","FEZA","HAMUR","KIVI","LÜKS","MODA","PIRE",
+     "BANT","EKIP","GÜVE","HECE","KAMP","NOTA","ROTA","SOBA","TOPA","ÜZÜM"],
+  5:["ARABA","BEBEK","CADDE","DENIZ","ELMAS","FENER","GITAR","KALEM","LAMBA",
+     "NEHIR","PANEL","SABAH","TABLO","VAPUR","YAZAR","BALIK","CEKET","DUMAN",
+     "EKMEK","GUNES","HASTA","KASIM","LIMON","MASAL","NISAN","PAZAR","RESIM",
+     "SEKER","BULUT","CEVIZ","DARBE","FIDAN","GONCA","HAYAL","KEMER","LOZAN",
+     "MIRAS","NAZAR","PELIN","SAFRA","TERAS","UNVAN","VATAN","ASLAN","BAYIR",
+     "DESTE","ENGEL","KURAL","MERAK","NESIL","OMLET","PETEK","TEMEL","UFKUN"],
+  6:["ANKARA","FENERI","GITAR","KALEMM","LAMBAM","NEHIRI","PANELI","SABAHI",
+     "BERRAK","COSKUN","EZGISI","GERÇEK","HERKES","ILERDE","KALBIN","PARLAK",
+     "RUHUMU","SEVGIM","TATMIN","UZAKTA","VARLIK","YENIGI","AKILLI","ENERJI",
+     "DIKKAT","BAHARI","CEVHER","ELINDE","HABERI","KABACA","MAVISI","NESNEL",
+     "PAHALI","RAKIBI","ZEVKLE","BEREYI","DALGIN","FAYDAL","HAKKIN","KAHVEM"],
+  7:["ANLAMAK","CALISMA","DENETIM","FENOMEN","GORUNTU","KALITIM","YAZILIM",
+     "BEREKETL","KAHRAMAN","LIMONATA","MASALLAR","NIYETINI","FIKIRLER",
+     "GELIRINE","HAMURDAN","ISTEKLER","PARMAGIN","SAHILDEN","TARAFINA",
+     "VEDASINI","YAKININA","AHENGLI","DUNYANIN","HERKESE","INANMAK"]
+};
 
-    <div class="game-area">
-      <div id="board" class="board"></div>
-    </div>
+// ── GÜNLÜK CONFIG ──────────────────────────
+function getDailyConfig(){
+  const now=new Date();
+  const doy=Math.floor((now-new Date(now.getFullYear(),0,0))/864e5);
+  const seed=now.getFullYear()*10000+(now.getMonth()+1)*100+now.getDate();
+  const lengths=[5,6,4,7,5,6,5,4,6,5,7,4,5,6];
+  const times=[60,75,90,45,60,75,60,90,45,75,60,60,90,75];
+  const len=lengths[doy%lengths.length];
+  const tl=times[doy%times.length];
+  const wlist=WORDS[len];
+  return{word:wlist[seed%wlist.length],length:len,timeLimit:tl};
+}
 
-    <div id="message-bar" class="message-bar"></div>
+const CFG=getDailyConfig();
+let{word,length,timeLimit}=CFG;
+document.getElementById('daily-info').textContent=`${length} harf · ${timeLimit}sn`;
 
-    <div class="keyboard-area">
-      <div id="keyboard" class="keyboard"></div>
-    </div>
-  </div>
+// ── KLAVYE ──────────────────────────────────
+const KB=[
+  ['E','R','T','Y','U','I','O','P','Ğ','Ü'],
+  ['A','S','D','F','G','H','J','K','L','Ş','İ'],
+  ['ENTER','Z','C','V','B','N','M','Ö','Ç','⌫']
+];
 
-  <!-- EKRAN 4: SONUÇ -->
-  <div id="screen-result" class="screen">
-    <div class="result-bg">
-      <div class="glow-orb orb3"></div>
-    </div>
-    <div class="result-content">
-      <div id="result-emoji" class="result-emoji">🏆</div>
-      <h2 id="result-title">Tebrikler!</h2>
-      <p id="result-sub">Kelimeyi buldun!</p>
-      <div id="result-word-reveal" class="result-word-reveal"></div>
-      <div class="result-stats">
-        <div class="stat-box">
-          <span class="stat-num" id="stat-score">0</span>
-          <span class="stat-label">Puan</span>
-        </div>
-        <div class="stat-box">
-          <span class="stat-num" id="stat-time">—</span>
-          <span class="stat-label">Süre</span>
-        </div>
-        <div class="stat-box">
-          <span class="stat-num" id="stat-tries">—</span>
-          <span class="stat-label">Deneme</span>
-        </div>
-      </div>
-      <div class="result-next">
-        <p class="next-label">Sonraki kelime</p>
-        <div id="next-timer" class="next-timer">00:00:00</div>
-      </div>
-      <button class="btn-share" id="btn-share">Sonucu Paylaş</button>
-    </div>
-  </div>
+// ── OYUN STATE ──────────────────────────────
+let crow=0,ccol=0,cguess=[],board=[],kstate={},
+    over=false,tint=null,tleft=timeLimit,usedTries=0;
 
-  <script src="js/words.js"></script>
-  <script src="js/game.js"></script>
+const CIRC=2*Math.PI*19;
+
+// ── EKRAN ──────────────────────────────────
+function show(id){
+  document.querySelectorAll('.scr').forEach(s=>s.classList.remove('on'));
+  document.getElementById(id).classList.add('on');
+}
+
+// ── BOARD ───────────────────────────────────
+function buildBoard(){
+  const el=document.getElementById('board');
+  el.innerHTML='';
+  board=[];
+  // Hücre boyutu — ekrana sığsın
+  const avH=window.innerHeight-180; // header+kb için yer bırak
+  const avW=Math.min(window.innerWidth-32,460);
+  const byH=Math.floor((avH-5*6)/6);
+  const byW=Math.floor((avW-6*(length-1))/length);
+  const sz=Math.min(byH,byW,62);
+  const fs=Math.max(14,Math.round(sz*0.38));
+
+  for(let r=0;r<6;r++){
+    const row=document.createElement('div');
+    row.className='b-row';
+    row.style.gridTemplateColumns=`repeat(${length},${sz}px)`;
+    const cells=[];
+    for(let c=0;c<length;c++){
+      const cell=document.createElement('div');
+      cell.className='cell';
+      cell.style.cssText=`width:${sz}px;height:${sz}px;font-size:${fs}px`;
+      row.appendChild(cell);
+      cells.push(cell);
+    }
+    el.appendChild(row);
+    board.push(cells);
+  }
+}
+
+// ── KLAVYE ─────────────────────────────────
+function buildKB(){
+  const wrap=document.getElementById('kb-wrap');
+  wrap.innerHTML='';
+  KB.forEach(row=>{
+    const rowEl=document.createElement('div');
+    rowEl.className='kb-row';
+    row.forEach(k=>{
+      const btn=document.createElement('button');
+      btn.className='kkey'+(k==='ENTER'||k==='⌫'?' wide':'');
+      btn.textContent=k;
+      btn.dataset.k=k;
+      btn.addEventListener('pointerdown',e=>{e.preventDefault();handleKey(k)});
+      rowEl.appendChild(btn);
+    });
+    wrap.appendChild(rowEl);
+  });
+}
+
+// ── TİMER ──────────────────────────────────
+function updateTimer(){
+  const num=document.getElementById('tmr-num');
+  const circ=document.getElementById('tmr-circle');
+  num.textContent=tleft;
+  const pct=tleft/timeLimit;
+  circ.style.strokeDasharray=CIRC;
+  circ.style.strokeDashoffset=CIRC*(1-pct);
+  num.className='';
+  circ.style.stroke='#6c63ff';
+  if(tleft<=10){num.classList.add('danger');circ.style.stroke='#ef4444'}
+  else if(tleft<=20){num.classList.add('warn');circ.style.stroke='#f97316'}
+}
+
+function startTimer(){
+  updateTimer();
+  tint=setInterval(()=>{
+    tleft--;updateTimer();
+    if(tleft<=0){clearInterval(tint);endGame(false,'time')}
+  },1000);
+}
+function stopTimer(){clearInterval(tint)}
+
+// ── GİRİŞ ──────────────────────────────────
+function handleKey(k){
+  if(over)return;
+  if(k==='⌫'||k==='Backspace'){del()}
+  else if(k==='ENTER'||k==='Enter'){submit()}
+  else if(/^[A-ZÇĞİÖŞÜa-zçğışöüşü]$/.test(k)){add(k.toUpperCase())}
+}
+
+function add(l){
+  if(ccol>=length)return;
+  const cell=board[crow][ccol];
+  cell.textContent=l;
+  cell.classList.add('has');
+  cell.animate([{transform:'scale(1.18)'},{transform:'scale(1)'}],{duration:80});
+  cguess.push(l);ccol++;
+}
+function del(){
+  if(ccol<=0)return;
+  ccol--;cguess.pop();
+  board[crow][ccol].textContent='';
+  board[crow][ccol].classList.remove('has');
+}
+
+// ── TAHMİN ─────────────────────────────────
+function submit(){
+  if(ccol<length){msg('Kelime eksik!');shake(crow);return}
+  const guess=cguess.join('');
+  usedTries=crow+1;
+  reveal(crow,guess);
+  if(guess===word){stopTimer();setTimeout(()=>endGame(true),1800);return}
+  if(crow===5){stopTimer();setTimeout(()=>endGame(false,'guess'),1800);return}
+  crow++;ccol=0;cguess=[];
+  document.getElementById('try-num').textContent=crow+1;
+}
+
+function reveal(row,guess){
+  const wa=word.split(''),ga=guess.split(''),res=Array(length).fill('no');
+  const wu=Array(length).fill(false),gu=Array(length).fill(false);
+  ga.forEach((l,i)=>{if(l===wa[i]){res[i]='ok';wu[i]=gu[i]=true}});
+  ga.forEach((l,i)=>{
+    if(gu[i])return;
+    const f=wa.findIndex((wl,wi)=>!wu[wi]&&wl===l);
+    if(f!==-1){res[i]='here';wu[f]=true}
+  });
+  board[row].forEach((cell,i)=>{
+    setTimeout(()=>{
+      cell.classList.add('flip');
+      setTimeout(()=>{
+        cell.classList.add(res[i]);
+        const k=ga[i],prev=kstate[k];
+        const rank={ok:2,here:1,no:0};
+        if(prev===undefined||rank[res[i]]>rank[prev]){
+          kstate[k]=res[i];
+          const btn=document.querySelector(`.kkey[data-k="${k}"]`);
+          if(btn){btn.className='kkey'+(k==='ENTER'||k==='⌫'?' wide':'')+' '+res[i]}
+        }
+      },150);
+    },i*110);
+  });
+}
+
+// ── MESAJ ───────────────────────────────────
+let mt;
+function msg(txt,dur=1800){
+  const el=document.getElementById('msg');
+  el.textContent=txt;el.classList.add('show');
+  clearTimeout(mt);mt=setTimeout(()=>el.classList.remove('show'),dur);
+}
+function shake(row){
+  board[row].forEach(c=>c.animate(
+    [{transform:'translateX(-5px)'},{transform:'translateX(5px)'},
+     {transform:'translateX(-3px)'},{transform:'translateX(3px)'},{transform:'none'}],
+    {duration:280}));
+}
+
+// ── OYUN SONU ──────────────────────────────
+function endGame(won,reason){
+  over=true;stopTimer();
+  const elapsed=timeLimit-tleft;
+  const score=won?(tleft*10+(6-usedTries)*50):0;
+
+  if(won)setTimeout(confetti,200);
+
+  setTimeout(()=>{
+    show('s-result');
+    document.getElementById('r-emoji').textContent=
+      won?(usedTries===1?'🔥':usedTries<=3?'🏆':'✅'):'😢';
+    document.getElementById('res-title').textContent=
+      won?(usedTries===1?'İnanılmaz!':usedTries<=3?'Harika!':'Buldun!'):
+      (reason==='time'?'Süre Doldu!':'6 Hak Bitti!');
+    document.getElementById('res-sub').textContent=
+      won?`${usedTries}. denemede buldun`:
+      `Kelime: ${word}`;
+
+    const rw=document.getElementById('r-word');
+    rw.innerHTML='';
+    word.split('').forEach((l,i)=>{
+      const s=document.createElement('span');
+      s.className='rl';s.textContent=l;
+      s.style.animationDelay=`${i*55}ms`;
+      rw.appendChild(s);
+    });
+
+    document.getElementById('r-score').textContent=score;
+    document.getElementById('r-time').textContent=elapsed+'sn';
+    document.getElementById('r-tries').textContent=won?usedTries:'—';
+    nextCountdown();
+  },won?600:200);
+}
+
+function nextCountdown(){
+  function upd(){
+    const now=new Date(),tom=new Date(now);
+    tom.setDate(tom.getDate()+1);tom.setHours(0,0,0,0);
+    const d=tom-now;
+    const h=String(Math.floor(d/36e5)).padStart(2,'0');
+    const m=String(Math.floor(d%36e5/6e4)).padStart(2,'0');
+    const s=String(Math.floor(d%6e4/1e3)).padStart(2,'0');
+    document.getElementById('next-count').textContent=`${h}:${m}:${s}`;
+  }
+  upd();setInterval(upd,1000);
+}
+
+// ── PAYLAŞ ─────────────────────────────────
+document.getElementById('btn-share').addEventListener('click',()=>{
+  const rows=board.slice(0,usedTries).map(row=>
+    row.map(c=>c.classList.contains('ok')?'🟩':c.classList.contains('here')?'🟨':'⬛').join('')
+  ).join('\n');
+  const text=`LATTEM — ${length} harf\n${rows}\nlattem.app`;
+  if(navigator.share){navigator.share({text})}
+  else{navigator.clipboard.writeText(text).then(()=>msg('Kopyalandı! ✓'))}
+});
+
+// ── KONFETİ ─────────────────────────────────
+function confetti(){
+  const cols=['#6c63ff','#22d3a5','#facc15','#ec4899','#34d399','#f472b6'];
+  for(let i=0;i<90;i++){
+    const el=document.createElement('div');
+    el.className='kf';
+    const w=3+Math.random()*7,h=3+Math.random()*7;
+    el.style.cssText=`left:${Math.random()*100}vw;background:${cols[~~(Math.random()*cols.length)]};`+
+      `animation-delay:${Math.random()*.7}s;animation-duration:${.9+Math.random()*1.1}s;`+
+      `width:${w}px;height:${h}px;border-radius:${Math.random()>.5?'50%':'2px'}`;
+    document.body.appendChild(el);
+    setTimeout(()=>el.remove(),2600);
+  }
+}
+
+// ── BAŞLATMA ────────────────────────────────
+function startGame(){
+  over=false;crow=0;ccol=0;cguess=[];kstate={};
+  tleft=timeLimit;usedTries=0;
+  document.getElementById('try-num').textContent='1';
+  document.getElementById('tmr-num').className='';
+  buildBoard();buildKB();
+  show('s-game');
+  setTimeout(startTimer,350);
+}
+
+// ── KLAVYE OLAYLARI ──────────────────────────
+document.addEventListener('keydown',e=>{
+  if(e.ctrlKey||e.altKey||e.metaKey)return;
+  handleKey(e.key);
+});
+
+// ── NAVİGASYON ──────────────────────────────
+document.getElementById('btn-play').onclick=startGame;
+document.getElementById('btn-start-how').onclick=startGame;
+document.getElementById('btn-howto').onclick=()=>show('s-how');
+document.getElementById('btn-back-how').onclick=()=>show('s-intro');
+document.getElementById('btn-back-game').onclick=()=>{stopTimer();show('s-intro')};
+</script>
 </body>
 </html>
